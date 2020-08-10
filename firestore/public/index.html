@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.17.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.17.2/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.17.2/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.17.2/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.17.2/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.17.2/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    
+  </head>
+  <body>
+<!-- localStorage -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TODO list</title>
+</head>
+<body>
+  <h1>Demo Todos List with Google firebase</h1>
+  <input id="new-item" type="text" />
+  <button id="add-btn">Add</button>
+  <ul id="todo-list">
+    <!-- <li>Take shower</li>
+    <li>Have a walk</li>
+    <li>Go to bed</li> -->
+  </ul>
+
+  <script type="text/javascript">
+    
+  </script>
+</body>
+</html>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+
+        var todoList = [];
+        var db = firebase.firestore();
+
+        db.collection('todos').get().then(function(snap) {
+          console.log('snap', snap.docs);
+          todoList = snap.docs;
+          render();
+        });
+
+        var storageKey = 'todoList';
+        var dataString = localStorage.getItem(storageKey);
+
+        
+
+        if (dataString) {
+          todoList = JSON.parse(dataString);
+        } else {
+          todoList = [];
+        }
+
+        var addBtn = document.getElementById('add-btn');
+        // addBtn.onclick = addItem;
+        addBtn.addEventListener('click', addItem);
+
+        function addItem() {
+          // get value of the input
+          var input = document.getElementById('new-item');
+          // add to todoList array
+          var newItem = { content: input.value };
+          db.collection('todos').add(newItem)
+            .then(function(docRef) { // document reference
+              return docRef.get();
+            })
+            .then(function(snap) {
+              todoList.push(snap);
+              render();
+              input.value = '';
+            });
+        }
+
+        function render() {
+          var htmlList = document.getElementById('todo-list');
+          var content = todoList.map(function(item) {
+            return '<li>' + item.data().content + '</li>';
+          });
+
+          htmlList.innerHTML = content.join('');
+        }
+
+        render();
+
+
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+  </body>
+</html>

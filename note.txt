@@ -1,0 +1,21 @@
+  document.addEventListener('DOMContentLoaded', function() {
+    var database = firebase.database();
+
+    // firebase.database().ref('todos/' + 2).set({
+    //   content: 'Hello',
+    //   status: 'active'
+    // });
+
+    var ref = firebase.database().ref();                           
+    ref.on("value", function(snapshot){
+        console.log('abc', JSON.stringify(snapshot.val(), null, 2));
+        todoList = snapshot.val().todos;
+        console.log('todoList', todoList);
+        render();
+    });
+
+  });
+  
+  
+  
+  
